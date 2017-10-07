@@ -19,13 +19,13 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        //开始界面沉浸模式
+        //开启沉浸模式
         View decorView = getWindow().getDecorView();
         int option = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(option);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+        actionBar.hide();//隐藏标题栏和状态栏
 
         new Handler().postDelayed(new Runnable() {
 
@@ -35,6 +35,6 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.startActivity(intent);
                 MainActivity.this.finish();
             }
-        }, 1000);
+        }, 1000);//界面延时
     }
 }

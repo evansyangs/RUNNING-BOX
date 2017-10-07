@@ -16,57 +16,57 @@ import java.util.Random;
  */
 
 public class GameView extends SurfaceView implements Callback,Runnable{
-    public int width, height;
-    Random mRandom = new Random();//随机数
+    public Random mRandom = new Random();//随机数
     private Canvas mCanvas;
-    //刷新界面线程
-    private Thread mThread;
-    //界面处理句柄
-    private SurfaceHolder mSurfaceHolder;
+    private Thread mThread;    //刷新界面线程
+    private SurfaceHolder mSurfaceHolder;    //界面处理句柄
     private boolean mIsRunning = false;
-    private int TIME_IN_FRAME = 50;
+    private int TIME_IN_FRAME = 25;//刷新频率
     GameActivity gameActivity;
-    //获取屏幕信息
-    DisplayMetrics dm = getResources().getDisplayMetrics();
-    //横屏宽度
-    int screenWidth = dm.widthPixels;
-    //横屏高度
-    int screenHeight = dm.heightPixels;
+    public DisplayMetrics dm = getResources().getDisplayMetrics();    //获取屏幕信息
+    public int screenWidth = dm.widthPixels;    //横屏宽度
+    public int screenHeight = dm.heightPixels;    //横屏高度
+
+    //初始化各个位置
+    Box mBox = new Box(this,100,screenHeight/2);   //游戏开始时主人公Box的位置
+    //下面的台阶初始位置有点简单粗暴...到时我再按照设备屏幕调一下
+    StageBlock[] mStageblock = new StageBlock[]{new StageBlock(this,screenWidth+mRandom.nextInt(50),screenHeight-StageBlock.getHEIGHT()-mRandom.nextInt(100)),
+            new StageBlock(this,screenWidth+mRandom.nextInt(50)+800,screenHeight-StageBlock.getHEIGHT()-mRandom.nextInt(300)),
+            new StageBlock(this,screenWidth+mRandom.nextInt(50)+1600,screenHeight-StageBlock.getHEIGHT()-mRandom.nextInt(500))};//三个台阶的位置
+    StartStage mStartStage = new StartStage(this,0,screenHeight/2+Box.getWIDTH()+1); //游戏开始时主人公Box站的台阶位置
 
 
-    Box box = new Box(this,0,screenHeight/2+Box.WIDTH/2);
-//    StageBlock[] stageblock = new StageBlock[]{new StageBlock(this,screenWidth,100),new StageBlock(this,screenWidth+100,200),
-//            new StageBlock(this,screenWidth+200,300),new StageBlock(this,screenWidth+300,400) };
-    StageBlock stageblock1 = new StageBlock(this,screenWidth+mRandom.nextInt(50),screenHeight-StageBlock.HEIGHT-mRandom.nextInt(100));
-    StageBlock stageblock2 = new StageBlock(this,screenWidth+mRandom.nextInt(50)+800,screenHeight-StageBlock.HEIGHT-mRandom.nextInt(500));
-    StageBlock stageblock3 = new StageBlock(this,screenWidth+mRandom.nextInt(50)+1600,screenHeight-StageBlock.HEIGHT-mRandom.nextInt(900));
+    //判断台阶是否已通过整个界面,如果已通过，重新设置初始位置
+    public void StageblockIsOut(StageBlock mStageblock){
+        if (mStageblock.getX() < -StageBlock.getWIDTH()){
+            mStageblock.setX(screenWidth+mRandom.nextInt(50));
+            mStageblock.setY(screenHeight-StageBlock.getHEIGHT()-mRandom.nextInt(500));
+        }
+    }
 
-
-    public GameView(Context context, int width, int height) {
+    public GameView(Context context) {
         super(context);
         setFocusable(true);
         //activity是 context的一个子类。
         gameActivity = (GameActivity) context;
-        this.width = width;
-        this.height = height;
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
     }
 
+    //所有图像在此绘制
     public void mDraw() {
         //设置画布的颜色
         mCanvas.drawColor(Color.WHITE);
         drawBG(mCanvas);
-        box.draw(mCanvas);
-        stageblock1.draw(mCanvas);
-        stageblock2.draw(mCanvas);
-        stageblock3.draw(mCanvas);
-
-//        for (StageBlock mstageblock : stageblock){
-//            mstageblock.draw(mCanvas);
-//        }
+        mBox.draw(mCanvas);//绘制主人公Box
+        mStartStage.draw(mCanvas);//绘制主人公Box的开始台阶
+        //绘制台阶方块
+        for (StageBlock mStageblocks : mStageblock){
+            mStageblocks.draw(mCanvas);
+            StageblockIsOut(mStageblocks);//判断是否已经移除屏幕
+        }
     }
-
+    //画背景，起参照作用，之后可以删除，改成背景图
     public void drawBG(Canvas mCanvas) {
         Paint mPaint = new Paint();
         mPaint.setColor(Color.BLACK);
@@ -74,9 +74,9 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         mPaint.setAlpha(50);
         //设置抗锯齿
         mPaint.setAntiAlias(true);
-        float h = height * 0.01666667f;
-        for (int i = 0; i < height; i += h) {
-            mCanvas.drawLine(0, i, width, i, mPaint);
+        float h = screenHeight * 0.01666667f;
+        for (int i = 0; i < screenHeight; i += h) {
+            mCanvas.drawLine(0, i, screenWidth, i, mPaint);
         }
     }
 
@@ -107,7 +107,7 @@ public class GameView extends SurfaceView implements Callback,Runnable{
             //调用mDraw进行绘制
             synchronized (mSurfaceHolder) {
                 mCanvas = mSurfaceHolder.lockCanvas();
-                mDraw();
+                mDraw();//绘图
                 mSurfaceHolder.unlockCanvasAndPost(mCanvas);
             }
 

@@ -11,13 +11,19 @@ import android.graphics.Paint;
 public class Box {
     private int x;
     private int y;          //坐标
-    public static int WIDTH = 200;          // 边长
+    private static int WIDTH = 150;          // 边长
     private static int GRAVITY = 10;        //重力加速度
     private int jumpSpeed = 0;              //跳跃初始速度
     private Paint mPaint;       //绘制
     GameView gameView;
+
+    public static int getWIDTH() {
+        return WIDTH;
+    }
+
     //初始化坐标
     public Box(int x, int y){
+
         this.x = x;
         this.y = y;
     }
@@ -51,8 +57,6 @@ public class Box {
     }
 
     void draw(Canvas canvas){
-        //此处添加move()函数
-
-        canvas.drawRect(x,y,x+WIDTH,y+WIDTH,mPaint);
+        canvas.drawRect(x,y,x+WIDTH,y+WIDTH,mPaint);//绘制主人公Box
     }
 }
