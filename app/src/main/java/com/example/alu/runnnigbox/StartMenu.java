@@ -4,12 +4,12 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageView;
 
-public class MainActivity extends AppCompatActivity {
+public class StartMenu extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,8 +18,6 @@ public class MainActivity extends AppCompatActivity {
         //强制为横屏
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        setContentView(R.layout.activity_main);
-
         //开启沉浸模式
         View decorView = getWindow().getDecorView();
         int option = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -27,21 +25,21 @@ public class MainActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(option);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();//隐藏标题栏和状态栏
+        setContentView(R.layout.activity_start_menu);
 
-        new Handler().postDelayed(new Runnable() {
-
+        ImageView mImage_start = (ImageView) findViewById(R.id.start_menu);
+        mImage_start.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                Intent intent = new Intent(MainActivity.this, StartMenu.class);
-                MainActivity.this.startActivity(intent);
-                MainActivity.this.finish();
+            public void onClick(View v) {
+                Intent intent = new Intent(StartMenu.this,GameActivity.class);
+                startActivity(intent);
             }
-        }, 5000);//界面延时
+        });
     }
 
     /*
-     * 开启沉浸模式
-     */
+ * 开启沉浸模式
+ */
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);

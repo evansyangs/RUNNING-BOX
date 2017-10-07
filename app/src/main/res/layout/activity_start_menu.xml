@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.alu.runnnigbox.StartMenu">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/startup_bkg_gray" />
+
+    <ImageView
+        android:id="@+id/start_frame"
+        android:background="@drawable/startup_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp" />
+
+    <ImageView
+        android:id="@+id/start_menu"
+        android:background="@drawable/startup_lbl_start_zh"
+        android:clickable="true"
+        android:layout_width="150dp"
+        android:layout_height="75dp"
+        android:layout_centerVertical="true"
+        android:layout_alignEnd="@id/title"
+        android:layout_alignRight="@id/title" />
+
+    <ImageView
+        android:id="@+id/title"
+        android:padding="10dp"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/startup_lbl_title_zh"
+        android:layout_above="@+id/start_menu"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/start_about"
+        android:background="@drawable/startup_lbl_about_zh"
+        android:clickable="true"
+        android:layout_width="100dp"
+        android:layout_height="66dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/start_menu"
+        android:layout_alignEnd="@id/start_menu"
+        android:layout_alignRight="@id/start_menu" />
+
+    <ImageView
+        android:id="@+id/option"
+        android:background="@drawable/startup_lbl_option_zh"
+        android:clickable="true"
+        android:layout_width="140dp"
+        android:layout_height="67dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/start_menu"
+        android:layout_toStartOf="@id/start_about"
+        android:layout_toLeftOf="@id/start_about" />
+
+    <ImageView
+        android:id="@+id/stratup_photo"
+        android:background="@drawable/startup_photo_border"
+        android:src="@drawable/startup_herface1"
+        android:layout_width="140dp"
+        android:layout_height="150dp"
+        android:layout_below="@id/title"
+        android:layout_toStartOf="@id/option"
+        android:layout_toLeftOf="@id/option" />
+
+    <TextView
+        android:textSize="250sp"
+        android:textColor="#E91E63"
+        android:id="@+id/text_six"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="6" />
+
+</RelativeLayout>
