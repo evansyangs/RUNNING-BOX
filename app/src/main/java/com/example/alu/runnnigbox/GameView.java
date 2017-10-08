@@ -5,11 +5,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Toast;
 
 import java.util.Random;
+
+import static android.view.MotionEvent.*;
 
 /**
  * Created by 10988 on 2017/10/7.
@@ -30,10 +35,9 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     //初始化各个位置
     Box mBox = new Box(this,100,screenHeight/2);   //游戏开始时主人公Box的位置
     //下面的台阶初始位置有点简单粗暴...到时我再按照设备屏幕调一下
-    StageBlock[] mStageblock = new StageBlock[]{new StageBlock(this,screenWidth+mRandom.nextInt(50),screenHeight-StageBlock.getHEIGHT()-mRandom.nextInt(100)),
+    StageBlock[] mStageblock = new StageBlock[]{new StageBlock(this,0,screenHeight/2+Box.getWIDTH() + 1),new StageBlock(this,screenWidth+mRandom.nextInt(50),screenHeight-StageBlock.getHEIGHT()-mRandom.nextInt(100)),
             new StageBlock(this,screenWidth+mRandom.nextInt(50)+800,screenHeight-StageBlock.getHEIGHT()-mRandom.nextInt(300)),
-            new StageBlock(this,screenWidth+mRandom.nextInt(50)+1600,screenHeight-StageBlock.getHEIGHT()-mRandom.nextInt(500))};//三个台阶的位置
-    StartStage mStartStage = new StartStage(this,0,screenHeight/2+Box.getWIDTH()+1); //游戏开始时主人公Box站的台阶位置
+            new StageBlock(this,screenWidth+mRandom.nextInt(50)+1600,screenHeight-StageBlock.getHEIGHT()-mRandom.nextInt(500))};//三个台阶的位置//游戏开始时主人公Box站的台阶位置
 
 
     //判断台阶是否已通过整个界面,如果已通过，重新设置初始位置
@@ -57,9 +61,15 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     public void mDraw() {
         //设置画布的颜色
         mCanvas.drawColor(Color.WHITE);
-        drawBG(mCanvas);
+        //方块状态变化和检测
+        if(mBox.isCrash(screenHeight)){
+            mBox.setJumpSpeed(0);
+        }
+        mBox.bump(mStageblock);
+        mBox.freeFall(mStageblock);
+
+        drawBG(mCanvas); // 绘制背景
         mBox.draw(mCanvas);//绘制主人公Box
-        mStartStage.draw(mCanvas);//绘制主人公Box的开始台阶
         //绘制台阶方块
         for (StageBlock mStageblocks : mStageblock){
             mStageblocks.draw(mCanvas);
@@ -120,5 +130,30 @@ public class GameView extends SurfaceView implements Callback,Runnable{
                 Thread.yield();
             }
         }
+    }
+    //只用来处理时间差
+    private long start;
+    private long end;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getAction();
+        switch (action){
+            case ACTION_DOWN:
+                start = System.currentTimeMillis();
+                break;
+            case ACTION_UP:
+                end = System.currentTimeMillis();
+                if((int)(end - start) >= 500){
+                    mBox.setJumpSpeed(Box.HIGH_SPEED);
+                }
+                else{
+                    mBox.setJumpSpeed(Box.LOW_SPEED);
+                }
+                mBox.Jump();
+                break;
+        }
+        return true;
+        //return super.onTouchEvent(event);
     }
 }
