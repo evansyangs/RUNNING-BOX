@@ -14,7 +14,7 @@ public class StageBlock {
     private static int WIDTH = 500;          // 宽
     private static int HEIGHT = 50;          // 高
     private Paint mPaint;       //绘制
-    private static int MOVESPEED = 10;
+    public static int MOVESPEED = 10;
     GameView gameView;
 
     public static int getWIDTH() {
@@ -62,8 +62,8 @@ public class StageBlock {
 
     public void draw(Canvas canvas){
         //此处添加move()函数
-        MoveToLeft();
         canvas.drawRect(x,y,x+WIDTH,y+HEIGHT,mPaint);
+        MoveToLeft();
     }
 
     //台阶向左移动的速度
