@@ -4,8 +4,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 
 /**
  * Created by yang on 2017/10/5.
@@ -125,16 +123,15 @@ public class Box {
     public int getY() {
         return y;
     }
+
     //设置跳跃速度
     public void setJumpSpeed(int jumpSpeed) {
         isDown = true;
         this.jumpSpeed = jumpSpeed;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     void draw(Canvas canvas){
         RectF rectF = new RectF(x,y,x+WIDTH,y+WIDTH);
         canvas.drawRoundRect(rectF,RADIAN,RADIAN,mPaint);//圆角矩形
-        //canvas.drawRect(x,y,x+WIDTH,y+WIDTH,mPaint);//绘制主人公Box
     }
 }

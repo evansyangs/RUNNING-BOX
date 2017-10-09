@@ -3,8 +3,7 @@ package com.example.alu.runnnigbox;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
+import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -27,7 +26,6 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     private SurfaceHolder mSurfaceHolder;    //界面处理句柄
     private boolean mIsRunning = false;
     private int TIME_IN_FRAME = 20;//刷新频率
-    GameActivity gameActivity;
 
     public DisplayMetrics dm = getResources().getDisplayMetrics();    //获取屏幕信息
     private int screenWidth = dm.widthPixels;    //横屏宽度
@@ -62,14 +60,18 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     public GameView(Context context) {
         super(context);
         setFocusable(true);
-        //activity是 context的一个子类。
-        gameActivity = (GameActivity) context;
+        mSurfaceHolder = getHolder();
+        mSurfaceHolder.addCallback(this);
+    }
+
+    public GameView(Context context, AttributeSet attrs) {
+        super(context,attrs);
+        setFocusable(true);
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
     }
 
     //所有图像在此绘制
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void mDraw() {
         //设置画布的颜色
         mCanvas.drawColor(Color.WHITE);
@@ -126,7 +128,6 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         mIsRunning=false;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void run() {
 //决定线程是否继续执行

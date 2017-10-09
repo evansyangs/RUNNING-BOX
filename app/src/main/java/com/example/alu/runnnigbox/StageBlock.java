@@ -69,7 +69,6 @@ public class StageBlock {
         //此处添加move()函数
         RectF rectF = new RectF(x,y,x+WIDTH,y+HEIGHT);
         canvas.drawRoundRect(rectF,RADIAN,RADIAN,mPaint);//圆角矩形
-        //canvas.drawRect(x,y,x+WIDTH,y+HEIGHT,mPaint);
         MoveToLeft();
     }
 
