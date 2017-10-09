@@ -5,16 +5,16 @@
     android:layout_height="match_parent"
     tools:context="com.example.alu.runnnigbox.MainActivity">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/welcome_background_green"/>
+
+
 
     <com.example.alu.runnnigbox.CustomsTextView
         android:id="@+id/welcome_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+
+        android:layout_marginTop="90dp"
+
         android:textSize="80dp"
 
         android:text="腾讯游戏"
@@ -36,7 +36,9 @@
         android:text="@string/warning"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp" />
+
+        android:layout_marginBottom="50dp" />
+
 
     <com.example.alu.runnnigbox.CustomsTextView
         android:layout_width="wrap_content"
