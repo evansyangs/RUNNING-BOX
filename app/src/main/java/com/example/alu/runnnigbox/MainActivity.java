@@ -14,12 +14,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //强制为横屏
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
-        setContentView(R.layout.activity_main);
-
+        //此设定必须要写在setContentView之前，否则会有异常）
         //开启沉浸模式
         View decorView = getWindow().getDecorView();
         int option = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -27,6 +22,10 @@ public class MainActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(option);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();//隐藏标题栏和状态栏
+        //强制为横屏
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        setContentView(R.layout.activity_main);
 
         new Handler().postDelayed(new Runnable() {
 
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*
-     * 开启沉浸模式
+     * 开启超强沉浸模式！
      */
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
