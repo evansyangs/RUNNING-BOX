@@ -16,11 +16,12 @@ public class Box {
     private static int GRAVITY = 1;        //重力加速度
     private int jumpSpeed = 0;              //跳跃初始速度
     public static final int HIGH_SPEED = 30;
-    public static final int LOW_SPEED = 20;
-    private Boolean isDown = true;
+    public static final int LOW_SPEED = 25;
+    private Boolean isDown = false;
     private static int RADIAN = 20; //圆角矩阵的弧度
     private Paint mPaint;       //绘制
     GameView gameView;
+    private int sum = 0;
     public static int getWIDTH() {
         return WIDTH;
     }
@@ -47,24 +48,55 @@ public class Box {
             y -= jumpSpeed;
         jumpSpeed -= GRAVITY;
     }
-    //左右碰撞检测 用的时候再拿出来
-//    public boolean isCrash(StageBlock stageBlock){
-//        if(x >= stageBlock.getX() - StageBlock.MOVESPEED
-//                && x <= stageBlock.getX() + StageBlock.getWIDTH() - StageBlock.MOVESPEED
-//                && y + WIDTH >= stageBlock.getY()
-//                && y + WIDTH <= stageBlock.getY() + StageBlock.getHEIGHT()){
-//            return true;
-//        }
-//        else if(x + WIDTH >= stageBlock.getX() - StageBlock.MOVESPEED
-//                && x + WIDTH <= stageBlock.getX() + StageBlock.getWIDTH() - StageBlock.MOVESPEED
-//                && y + WIDTH >= stageBlock.getY()
-//                && y + WIDTH <= stageBlock.getY() + StageBlock.getHEIGHT()){
-//            return true;
-//        }
-//        else {
-//            return false;
-//        }
-//    }
+    //下部碰撞
+    public StageBlock checkCrashStage(StageBlock[] stageBlocks){
+        for(StageBlock stageBlock: stageBlocks) {
+            if (x >= stageBlock.getX() - StageBlock.MOVESPEED
+                    && x <= stageBlock.getX() + StageBlock.getWIDTH() - StageBlock.MOVESPEED
+                    && y + WIDTH >= stageBlock.getY()
+                    && y + WIDTH <= stageBlock.getY() + StageBlock.getHEIGHT()
+                    || x + WIDTH >= stageBlock.getX() - StageBlock.MOVESPEED
+                    && x + WIDTH <= stageBlock.getX() + StageBlock.getWIDTH() - StageBlock.MOVESPEED
+                    && y + WIDTH >= stageBlock.getY()
+                    && y + WIDTH <= stageBlock.getY() + StageBlock.getHEIGHT()) {
+                return stageBlock;
+            }
+        }
+        return null;
+    }
+    //这也是下部碰撞
+    public boolean isCrash(StageBlock[] stageBlocks){
+        for(StageBlock stageBlock: stageBlocks) {
+            if (x >= stageBlock.getX() - StageBlock.MOVESPEED
+                    && x <= stageBlock.getX() + StageBlock.getWIDTH() - StageBlock.MOVESPEED
+                    && y + WIDTH >= stageBlock.getY()
+                    && y + WIDTH <= stageBlock.getY() + StageBlock.getHEIGHT()
+                    || x + WIDTH >= stageBlock.getX() - StageBlock.MOVESPEED
+                    && x + WIDTH <= stageBlock.getX() + StageBlock.getWIDTH() - StageBlock.MOVESPEED
+                    && y + WIDTH >= stageBlock.getY()
+                    && y + WIDTH <= stageBlock.getY() + StageBlock.getHEIGHT()) {
+                y = stageBlock.getY() - WIDTH;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 右边碰撞
+    public void isRightCrash(StageBlock[] stageBlocks){
+        for(StageBlock stageBlock: stageBlocks){
+            if(stageBlock.getX() > 0) {
+                if (x + WIDTH >= stageBlock.getX())
+                    if(stageBlock.getY() > y
+                        && stageBlock.getY() < y + WIDTH
+                        || stageBlock.getY() +StageBlock.getHEIGHT() > y
+                        && stageBlock.getY() +StageBlock.getHEIGHT() < y + WIDTH) {
+                    x = stageBlock.getX() - WIDTH; //撞到后随方块退后
+                    return;
+                }
+            }
+        }
+    }
     //上部碰撞反弹
     public void bump(StageBlock[] stageBlocks){
 
@@ -87,6 +119,7 @@ public class Box {
     //接触底部检测
     public boolean isCrash(int screenHight){
         if(y+WIDTH >= screenHight){
+            isDown = false;    //调试用 完善后删除
             return true;
         }
         else return false;
@@ -94,25 +127,26 @@ public class Box {
     // 自由落体
     public void freeFall(StageBlock[] stageBlocks){
         boolean flag = true;
-        for(StageBlock stageBlock: stageBlocks) {
-            if (x >= stageBlock.getX() - StageBlock.MOVESPEED
-                    && x <= stageBlock.getX() + StageBlock.getWIDTH() - StageBlock.MOVESPEED
-                    && y + WIDTH >= stageBlock.getY()
-                    && y + WIDTH <= stageBlock.getY() + StageBlock.getHEIGHT()
-                    || x + WIDTH >= stageBlock.getX() - StageBlock.MOVESPEED
-                    && x + WIDTH <= stageBlock.getX() + StageBlock.getWIDTH() - StageBlock.MOVESPEED
-                    && y + WIDTH >= stageBlock.getY()
-                    && y + WIDTH <= stageBlock.getY() + StageBlock.getHEIGHT()) {
-                y = stageBlock.getY() - WIDTH;
-                isDown = false;
-                flag = false;
-            }
+        sum ++;
+        // x 坐标随时间缓慢向前
+        if(sum  == 10){
+            x++;
+            sum = 0;
+        }
+        isRightCrash(stageBlocks);
+        if(isCrash(stageBlocks)){
+            isDown = false;
+            flag = false;
         }
         if(flag){
             isDown = true;
         }
         if(isDown) {
             Jump();
+            StageBlock stageBlock = checkCrashStage(stageBlocks);
+            if(stageBlock != null){
+                y = stageBlock.getY() - WIDTH;
+            }
         }
     }
     //Geter 函数
@@ -133,5 +167,9 @@ public class Box {
     void draw(Canvas canvas){
         RectF rectF = new RectF(x,y,x+WIDTH,y+WIDTH);
         canvas.drawRoundRect(rectF,RADIAN,RADIAN,mPaint);//圆角矩形
+    }
+
+    public Boolean getDown() {
+        return isDown;
     }
 }
