@@ -163,7 +163,11 @@ public class GameView extends SurfaceView implements Callback,Runnable{
                 break;
             case ACTION_UP:
                 end = System.currentTimeMillis();
-                if((int)(end - start) >= 500){
+                // 修复重复跳
+                if(mBox.getDown()){
+                    return false;
+                }
+                if((int)(end - start) >= 400){
                     mBox.setJumpSpeed(Box.HIGH_SPEED);
                 }
                 else{
