@@ -3,6 +3,9 @@ package com.example.alu.runnnigbox;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -31,6 +34,11 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     public DisplayMetrics dm = getResources().getDisplayMetrics();    //获取屏幕信息
     private int screenWidth = dm.widthPixels;    //横屏宽度
     private int screenHeight = dm.heightPixels;    //横屏高度
+
+    private int jumpSoundId;
+    private int jumphighSoundId;
+    private SoundPool mSoundPool;
+    private MediaPlayer mediaPlayer; //背景音乐播放
 
     public int getScreenWidth() {
         return screenWidth;
@@ -70,6 +78,14 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         setFocusable(true);
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
+
+        mSoundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+        jumpSoundId = mSoundPool.load(getContext(), R.raw.jump, 1);
+        jumphighSoundId = mSoundPool.load(getContext(), R.raw.jumphigh, 1);
+        mediaPlayer = MediaPlayer.create(getContext(), R.raw.background);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
+
     }
 
     //游戏结束
@@ -168,9 +184,12 @@ public class GameView extends SurfaceView implements Callback,Runnable{
                 }
                 if((int)(end - start) >= 400){
                     mBox.setJumpSpeed(Box.HIGH_SPEED);
+                    mSoundPool.play(jumphighSoundId, 50, 50, 1, 1, 1);
                 }
                 else{
                     mBox.setJumpSpeed(Box.LOW_SPEED);
+                    mSoundPool.play(jumpSoundId, 50, 50, 1, 1, 1);
+
                 }
                 mBox.Jump();
                 break;
