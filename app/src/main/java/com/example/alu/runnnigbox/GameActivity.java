@@ -11,8 +11,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.app.AlertDialog.Builder;
-import android.content.DialogInterface.OnClickListener;
 
 
 /**
@@ -39,37 +37,10 @@ public class GameActivity extends Activity {
         Button button =  this.findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                AlertDialog.Builder builder = new Builder(GameActivity.this);
-                builder.setTitle("提示");
-                builder.setMessage("你确定要退出游戏吗");
-
-                builder.setPositiveButton("重新开始", new OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-
-                        Intent intent = new Intent(GameActivity.this, GameActivity.class);
-                        GameActivity.this.startActivity(intent);
-                        GameActivity.this.finish();
-                    }
-                });
-
-                builder.setNegativeButton("退出游戏", new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        Intent intent = new Intent(GameActivity.this,StartMenu.class);
-                        GameActivity.this.startActivity(intent);
-                        GameActivity.this.finish();
-                    }
-                });
-
-                AlertDialog b = builder.create();
-                b.show();
+                CustomDialog();//构建自定义Dialog
             }
         });
-
-
         mView = (GameView) findViewById(R.id.gameView);//获取gameView资源
-
-
     }
 
     /*
@@ -90,4 +61,41 @@ public class GameActivity extends Activity {
         }
     }
 
+    //自定义的Dialog
+    public void CustomDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+        builder.setTitle("提示");
+        builder.setMessage("你确定要退出游戏吗");
+
+        mView.setmGameState(false);
+
+        builder.setNeutralButton("重新开始", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+                Intent intent = new Intent(GameActivity.this, GameActivity.class);
+                GameActivity.this.startActivity(intent);
+                GameActivity.this.finish();
+            }
+        });
+
+        builder.setPositiveButton("退出游戏", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                Intent intent = new Intent(GameActivity.this,StartMenu.class);
+                GameActivity.this.startActivity(intent);
+                GameActivity.this.finish();
+            }
+        });
+
+        builder.setNegativeButton("继续游戏", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface mDialog, int arg1) {
+
+            }
+        });
+
+        AlertDialog b = builder.create();
+        b.show();
+        //点击dialog之外的空白处，dialog不能消失
+        b.setCanceledOnTouchOutside(false);
+    }
 }
