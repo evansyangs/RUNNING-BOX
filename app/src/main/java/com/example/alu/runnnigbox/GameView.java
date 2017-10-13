@@ -79,13 +79,6 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
 
-        mSoundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-        jumpSoundId = mSoundPool.load(getContext(), R.raw.jump, 1);
-        jumphighSoundId = mSoundPool.load(getContext(), R.raw.jumphigh, 1);
-        mediaPlayer = MediaPlayer.create(getContext(), R.raw.background);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
-
     }
 
     //游戏结束
@@ -125,6 +118,14 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         mCanvas = mSurfaceHolder.lockCanvas();
         mDraw();//绘图
         mSurfaceHolder.unlockCanvasAndPost(mCanvas);
+
+        //播放音乐
+        mSoundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+        jumpSoundId = mSoundPool.load(getContext(), R.raw.jump, 1);
+        jumphighSoundId = mSoundPool.load(getContext(), R.raw.jumphigh, 1);
+        mediaPlayer = MediaPlayer.create(getContext(), R.raw.background);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
     }
 
     @Override
@@ -136,6 +137,11 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         //销毁
         mIsRunning = false;
+        //停止播放Bgm
+        if (null != mediaPlayer) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 
     public void setmGameState(boolean mGameState) {
@@ -182,13 +188,13 @@ public class GameView extends SurfaceView implements Callback,Runnable{
                 if(mBox.getDown()){
                     return false;
                 }
-                if((int)(end - start) >= 400){
+                if((int)(end - start) >= 200){
                     mBox.setJumpSpeed(Box.HIGH_SPEED);
-                    mSoundPool.play(jumphighSoundId, 50, 50, 1, 1, 1);
+                    mSoundPool.play(jumphighSoundId, 1, 1, 1, 0, 1);
                 }
                 else{
                     mBox.setJumpSpeed(Box.LOW_SPEED);
-                    mSoundPool.play(jumpSoundId, 50, 50, 1, 1, 1);
+                    mSoundPool.play(jumpSoundId, 1, 1, 1, 0, 1);
 
                 }
                 mBox.Jump();
