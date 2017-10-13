@@ -3,6 +3,9 @@ package com.example.alu.runnnigbox;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -22,6 +25,7 @@ import static android.view.MotionEvent.ACTION_UP;
 public class GameView extends SurfaceView implements Callback,Runnable{
     public Random mRandom = new Random();//随机数
     private Canvas mCanvas;
+    private boolean mGameState = false; //游戏状态
     private Thread mThread;    //刷新界面线程
     private SurfaceHolder mSurfaceHolder;    //界面处理句柄
     private boolean mIsRunning = false;
@@ -30,6 +34,11 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     public DisplayMetrics dm = getResources().getDisplayMetrics();    //获取屏幕信息
     private int screenWidth = dm.widthPixels;    //横屏宽度
     private int screenHeight = dm.heightPixels;    //横屏高度
+
+    private int jumpSoundId;
+    private int jumphighSoundId;
+    private SoundPool mSoundPool;
+    private MediaPlayer mediaPlayer; //背景音乐播放
 
     public int getScreenWidth() {
         return screenWidth;
@@ -69,6 +78,19 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         setFocusable(true);
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
+
+        mSoundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+        jumpSoundId = mSoundPool.load(getContext(), R.raw.jump, 1);
+        jumphighSoundId = mSoundPool.load(getContext(), R.raw.jumphigh, 1);
+        mediaPlayer = MediaPlayer.create(getContext(), R.raw.background);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
+
+    }
+
+    //游戏结束
+    public void GameOver(){
+
     }
 
     //所有图像在此绘制
@@ -77,12 +99,13 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         mCanvas.drawColor(Color.WHITE);
         //方块状态变化和检测
         if(mBox.isCrash(screenHeight)){
-            mBox.setJumpSpeed(0);
+            //此处调用游戏结束
+            mGameState = false;//界面暂停
+            GameOver();//结束
+
         }
         mBox.bump(mStageblock);
         mBox.freeFall(mStageblock);
-
-        drawBG(); // 绘制背景
 
         mBox.draw(mCanvas);//绘制主人公Box
         //绘制台阶方块
@@ -91,23 +114,6 @@ public class GameView extends SurfaceView implements Callback,Runnable{
             StageblockIsOut(mStageblocks);//判断是否已经移除屏幕
         }
     }
-    //画背景，起参照作用，之后可以删除，改成背景图
-    public void drawBG() {
-//        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.welcome_background_white);
-//        Bitmap resizeBmp = Bitmap.createScaledBitmap(bmp, screenWidth, screenHeight, true);
-//        mCanvas.drawBitmap(resizeBmp, 0, 0, null);
-//        Paint mPaint = new Paint();
-//        mPaint.setColor(Color.BLACK);
-//        //设置透明度
-//        mPaint.setAlpha(50);
-//        //设置抗锯齿
-//        mPaint.setAntiAlias(true);
-//
-//        float h = screenHeight * 0.01666667f;
-//        for (int i = 0; i < screenHeight; i += h) {
-//            mCanvas.drawLine(0, i, screenWidth, i, mPaint);
-//        }
-    }
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
@@ -115,6 +121,10 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         //新建一个刷屏线程
         mThread = new Thread(this);
         mThread.start();
+        //游戏开始界面
+        mCanvas = mSurfaceHolder.lockCanvas();
+        mDraw();//绘图
+        mSurfaceHolder.unlockCanvasAndPost(mCanvas);
     }
 
     @Override
@@ -125,21 +135,25 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         //销毁
-        mIsRunning=false;
+        mIsRunning = false;
     }
 
-    @Override
+    public void setmGameState(boolean mGameState) {
+        this.mGameState = mGameState;
+    }
+
     public void run() {
 //决定线程是否继续执行
         while (mIsRunning) {
             long startTime = System.currentTimeMillis();
-            //调用mDraw进行绘制
-            synchronized (mSurfaceHolder) {
-                mCanvas = mSurfaceHolder.lockCanvas();
-                mDraw();//绘图
-                mSurfaceHolder.unlockCanvasAndPost(mCanvas);
+            while (mGameState) {
+                //调用mDraw进行绘制
+                synchronized (mSurfaceHolder) {
+                    mCanvas = mSurfaceHolder.lockCanvas();
+                    mDraw();//绘图
+                    mSurfaceHolder.unlockCanvasAndPost(mCanvas);
+                }
             }
-
             long endTime = System.currentTimeMillis();
 
             int diffTime = (int) (endTime - startTime);
@@ -157,6 +171,7 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction();
+        mGameState = true;//点击时开始游戏
         switch (action){
             case ACTION_DOWN:
                 start = System.currentTimeMillis();
@@ -169,9 +184,12 @@ public class GameView extends SurfaceView implements Callback,Runnable{
                 }
                 if((int)(end - start) >= 400){
                     mBox.setJumpSpeed(Box.HIGH_SPEED);
+                    mSoundPool.play(jumphighSoundId, 50, 50, 1, 1, 1);
                 }
                 else{
                     mBox.setJumpSpeed(Box.LOW_SPEED);
+                    mSoundPool.play(jumpSoundId, 50, 50, 1, 1, 1);
+
                 }
                 mBox.Jump();
                 break;
