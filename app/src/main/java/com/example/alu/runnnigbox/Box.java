@@ -118,7 +118,7 @@ public class Box {
     }
     //接触底部检测
     public boolean isCrash(int screenHight){
-        if(y+WIDTH >= screenHight){
+        if(y >= screenHight + WIDTH){
             isDown = false;    //调试用 完善后删除
             return true;
         }
