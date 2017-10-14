@@ -22,12 +22,14 @@ import static android.view.MotionEvent.ACTION_UP;
 import android.util.Log;
 
 
+
+
 /**
  * Created by 10988 on 2017/10/7.
  */
 
 public class GameView extends SurfaceView implements Callback,Runnable{
-    public GameActivity mGameActivity;
+    private GameActivity mGameActivity;
     private Random mRandom = new Random();//随机数
     private int mStageNumber = 0;
     private Canvas mCanvas;
@@ -35,6 +37,7 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     private Thread mThread;    //刷新界面线程
     private SurfaceHolder mSurfaceHolder;    //界面处理句柄
     private boolean mIsRunning = false;
+
     private boolean mIsGameOver = false;
     private int TIME_IN_FRAME = 20;//刷新频率
 
@@ -47,22 +50,16 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     private SoundPool mSoundPool;
     private MediaPlayer mediaPlayer; //背景音乐播放
 
+    private String[] Tips={"长摁屏幕试试看","游戏结束了记得点击屏幕哦","快戳！用力戳！","我打赌，屏幕戳穿了你都到不了100个"};
+
     public int getmStageNumber() {
         return mStageNumber;
     }
 
-    public boolean ismIsGameOver() {
-        return mIsGameOver;
+    public void setmGameActivity(GameActivity mGameActivity) {
+        this.mGameActivity = mGameActivity;
     }
 
-    public int getScreenWidth() {
-        return screenWidth;
-    }
-
-    public int getScreenHeight() {
-
-        return screenHeight;
-    }
 
     public boolean returnstate(){
         return mIsGameOver;
@@ -107,7 +104,7 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         //方块状态变化和检测
         if(mBox.isCrash(screenHeight)){
             //此处调用游戏结束
-       //     Toast.makeText(mGameActivity,"GAME STATE" + mIsGameOver,Toast.LENGTH_SHORT);
+
             mGameState = false;//界面暂停
             mIsGameOver = true;//结束
         }
@@ -125,6 +122,8 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         mIsRunning = true;
+        StageBlock.setWIDTH(400);
+        StageBlock.setHEIGHT(100);
         //新建一个刷屏线程
         mThread = new Thread(this);
         mThread.start();
@@ -192,7 +191,6 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction();
         mGameState = true;//点击时开始游戏
-       // mGameActivity.GameOver();//测试
         switch (action){
             case ACTION_DOWN:
                 start = System.currentTimeMillis();
@@ -215,9 +213,47 @@ public class GameView extends SurfaceView implements Callback,Runnable{
                 mBox.Jump();
                 break;
         }
-     //   Log.e("isGameover",""+mIsGameOver);
-        if (mIsGameOver)
+
+
+        int CASE = mStageNumber % 30;
+        //显示提示与体积变化
+        switch (CASE){
+            case 6:
+            case 29:
+                mGameActivity.TipShow(Tips[0]);
+                StageBlock.setWIDTH(StageBlock.getWIDTH()-4);
+                StageBlock.setHEIGHT(StageBlock.getHEIGHT()-2);
+                break;
+            case 18:
+            case 39:
+                mGameActivity.TipShow(Tips[1]);
+                StageBlock.setWIDTH(StageBlock.getWIDTH()-4);
+                StageBlock.setHEIGHT(StageBlock.getHEIGHT()-2);
+                break;
+            case 10:
+                StageBlock.setWIDTH(StageBlock.getWIDTH()-4);
+                StageBlock.setHEIGHT(StageBlock.getHEIGHT()-2);
+                break;
+            case 28:
+            case 14:
+                mGameActivity.TipShow(Tips[2]);
+                StageBlock.setWIDTH(StageBlock.getWIDTH()+4);
+                StageBlock.setHEIGHT(StageBlock.getHEIGHT()+2);
+                break;
+            case 34:
+            case 22:
+                mGameActivity.TipShow(Tips[3]);
+                StageBlock.setWIDTH(StageBlock.getWIDTH()+4);
+                StageBlock.setHEIGHT(StageBlock.getHEIGHT()+2);
+                break;
+            default:
+                mGameActivity.TipHide();
+        }
+
+        if (mIsGameOver) {
             mGameActivity.GameOver();
+            mIsRunning = false;//停止onDraw()
+        }
 
 
         return true;

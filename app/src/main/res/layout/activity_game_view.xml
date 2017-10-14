@@ -11,16 +11,18 @@
     <!--游戏中的提示内容-->
     <TextView
         android:id="@+id/tips"
-        android:visibility="invisible"
+        android:visibility="gone"
+        android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="20sp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"/>
 
     <!--GameOver界面-->
     <RelativeLayout
         android:id="@+id/game_over"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:layout_width="500dp"
         android:layout_height="300dp"
         android:layout_centerInParent="true">
@@ -47,6 +49,7 @@
             android:src="@drawable/start"/>
 
         <ImageView
+            android:id="@+id/back_to_menu"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:src="@drawable/menu"
@@ -56,6 +59,7 @@
             android:layout_marginRight="30dp" />
 
         <ImageView
+            android:id="@+id/exit_game"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignTop="@+id/restart"
@@ -66,20 +70,22 @@
 
         <TextView
             android:id="@+id/game_grade"
-            android:layout_width="100dp"
+            android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_above="@+id/restart"
+            android:gravity="center"
+            android:textSize="20sp"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="30dp" />
+            android:layout_marginBottom="20dp" />
 
     </RelativeLayout>
 
 
     <Button
         android:id="@+id/button"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="@drawable/back"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@drawable/pause"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true" />

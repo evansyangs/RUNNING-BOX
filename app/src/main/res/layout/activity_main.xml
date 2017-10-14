@@ -5,18 +5,12 @@
     android:layout_height="match_parent"
     tools:context="com.example.alu.runnnigbox.MainActivity">
 
-
-
-
     <com.example.alu.runnnigbox.CustomsTextView
         android:id="@+id/welcome_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_marginTop="90dp"
-
         android:textSize="80dp"
-
         android:text="腾讯游戏"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
@@ -36,9 +30,7 @@
         android:text="@string/warning"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-
         android:layout_marginBottom="50dp" />
-
 
     <com.example.alu.runnnigbox.CustomsTextView
         android:layout_width="wrap_content"
@@ -47,6 +39,5 @@
         android:layout_marginLeft="170dp"
         android:layout_above="@+id/warning_content"
         android:text="健康游戏忠告:"/>
-
 
 </RelativeLayout>

@@ -19,12 +19,19 @@ public class StageBlock {
     public static int MOVESPEED = 10;
     GameView gameView;
 
+    public static void setWIDTH(int WIDTH) {
+        StageBlock.WIDTH = WIDTH;
+    }
+
     public static int getWIDTH() {
         return WIDTH;
     }
 
-    public static int getHEIGHT() {
+    public static void setHEIGHT(int HEIGHT) {
+        StageBlock.HEIGHT = HEIGHT;
+    }
 
+    public static int getHEIGHT() {
         return HEIGHT;
     }
 
@@ -32,7 +39,6 @@ public class StageBlock {
     public StageBlock(int x, int y){
         this.x = x;
         this.y = y;
-
     }
 
     public StageBlock(GameView gameView, int x, int y){
