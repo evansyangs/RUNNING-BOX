@@ -39,6 +39,7 @@ public class GameActivity extends Activity {
         setContentView(R.layout.activity_game_view);
 
         mView = (GameView) findViewById(R.id.gameView);//获取gameView资源
+        mView.mGameActivity = this;
         mGameOverLayout = (RelativeLayout)  findViewById(R.id.game_over);
         mGameGrade = (TextView) findViewById(R.id.game_grade) ;
 
@@ -49,11 +50,11 @@ public class GameActivity extends Activity {
             }
         });
 
-        while (mView.ismIsGameOver()){
-            mGameOverLayout.setVisibility(View.VISIBLE);
-            String str = "哇！你总共跳过了"+mView.getmStageNumber()+"块台阶!";
-            mGameGrade.setText(str);
-        }
+//        while (mView.ismIsGameOver()){
+//            mGameOverLayout.setVisibility(View.VISIBLE);
+//            String str = "哇！你总共跳过了"+mView.getmStageNumber()+"块台阶!";
+//            mGameGrade.setText(str);
+//        }
     }
 
     /*
@@ -111,4 +112,11 @@ public class GameActivity extends Activity {
         //点击dialog之外的空白处，dialog不能消失
         b.setCanceledOnTouchOutside(false);
     }
+
+    public void GameOver(){
+        mGameOverLayout.setVisibility(View.VISIBLE);
+        String str = "哇！你总共跳过了"+mView.getmStageNumber()+"块台阶!";
+        mGameGrade.setText(str);
+    }
+
 }

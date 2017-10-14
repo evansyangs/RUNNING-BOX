@@ -23,6 +23,7 @@ import static android.view.MotionEvent.ACTION_UP;
  */
 
 public class GameView extends SurfaceView implements Callback,Runnable{
+    public GameActivity mGameActivity;
     private Random mRandom = new Random();//随机数
     private int mStageNumber = 0;
     private Canvas mCanvas;
@@ -98,6 +99,7 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         //方块状态变化和检测
         if(mBox.isCrash(screenHeight)){
             //此处调用游戏结束
+//            mGameActivity.GameOver();
             mGameState = false;//界面暂停
             mIsGameOver = true;//结束
         }
@@ -134,7 +136,6 @@ public class GameView extends SurfaceView implements Callback,Runnable{
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder,  int format, int width, int height) {
-
     }
 
     @Override
@@ -182,6 +183,7 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction();
         mGameState = true;//点击时开始游戏
+       // mGameActivity.GameOver();//测试
         switch (action){
             case ACTION_DOWN:
                 start = System.currentTimeMillis();
