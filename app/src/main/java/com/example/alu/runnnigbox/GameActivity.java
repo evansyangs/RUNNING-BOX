@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 
 /**
@@ -23,6 +25,8 @@ import android.widget.Button;
 public class GameActivity extends Activity {
 
     private GameView mView = null;
+    private RelativeLayout mGameOverLayout = null;
+    private TextView mGameGrade = null;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,13 +38,23 @@ public class GameActivity extends Activity {
 
         setContentView(R.layout.activity_game_view);
 
+        mView = (GameView) findViewById(R.id.gameView);//获取gameView资源
+        mView.mGameActivity = this;
+        mGameOverLayout = (RelativeLayout)  findViewById(R.id.game_over);
+        mGameGrade = (TextView) findViewById(R.id.game_grade) ;
+
         Button button =  this.findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 CustomDialog();//构建自定义Dialog
             }
         });
-        mView = (GameView) findViewById(R.id.gameView);//获取gameView资源
+
+//        while (mView.ismIsGameOver()){
+//            mGameOverLayout.setVisibility(View.VISIBLE);
+//            String str = "哇！你总共跳过了"+mView.getmStageNumber()+"块台阶!";
+//            mGameGrade.setText(str);
+//        }
     }
 
     /*
@@ -98,4 +112,11 @@ public class GameActivity extends Activity {
         //点击dialog之外的空白处，dialog不能消失
         b.setCanceledOnTouchOutside(false);
     }
+
+    public void GameOver(){
+        mGameOverLayout.setVisibility(View.VISIBLE);
+        String str = "哇！你总共跳过了"+mView.getmStageNumber()+"块台阶!";
+        mGameGrade.setText(str);
+    }
+
 }

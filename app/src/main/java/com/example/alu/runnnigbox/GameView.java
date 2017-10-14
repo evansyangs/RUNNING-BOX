@@ -23,15 +23,18 @@ import static android.view.MotionEvent.ACTION_UP;
  */
 
 public class GameView extends SurfaceView implements Callback,Runnable{
-    public Random mRandom = new Random();//随机数
+    public GameActivity mGameActivity;
+    private Random mRandom = new Random();//随机数
+    private int mStageNumber = 0;
     private Canvas mCanvas;
     private boolean mGameState = false; //游戏状态
     private Thread mThread;    //刷新界面线程
     private SurfaceHolder mSurfaceHolder;    //界面处理句柄
     private boolean mIsRunning = false;
+    private boolean mIsGameOver = false;
     private int TIME_IN_FRAME = 20;//刷新频率
 
-    public DisplayMetrics dm = getResources().getDisplayMetrics();    //获取屏幕信息
+    private DisplayMetrics dm = getResources().getDisplayMetrics();    //获取屏幕信息
     private int screenWidth = dm.widthPixels;    //横屏宽度
     private int screenHeight = dm.heightPixels;    //横屏高度
 
@@ -39,6 +42,14 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     private int jumphighSoundId;
     private SoundPool mSoundPool;
     private MediaPlayer mediaPlayer; //背景音乐播放
+
+    public int getmStageNumber() {
+        return mStageNumber;
+    }
+
+    public boolean ismIsGameOver() {
+        return mIsGameOver;
+    }
 
     public int getScreenWidth() {
         return screenWidth;
@@ -63,6 +74,7 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         if (mStageblock.getX() < -screenWidth/3){
             mStageblock.setX(screenWidth+mRandom.nextInt(5));
             mStageblock.setY(screenHeight-StageBlock.getHEIGHT()-mRandom.nextInt(300));
+            mStageNumber++;
         }
     }
 
@@ -78,19 +90,6 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         setFocusable(true);
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
-
-        mSoundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-        jumpSoundId = mSoundPool.load(getContext(), R.raw.jump, 1);
-        jumphighSoundId = mSoundPool.load(getContext(), R.raw.jumphigh, 1);
-        mediaPlayer = MediaPlayer.create(getContext(), R.raw.background);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
-
-    }
-
-    //游戏结束
-    public void GameOver(){
-
     }
 
     //所有图像在此绘制
@@ -100,9 +99,9 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         //方块状态变化和检测
         if(mBox.isCrash(screenHeight)){
             //此处调用游戏结束
+//            mGameActivity.GameOver();
             mGameState = false;//界面暂停
-            GameOver();//结束
-
+            mIsGameOver = true;//结束
         }
         mBox.bump(mStageblock);
         mBox.freeFall(mStageblock);
@@ -125,17 +124,29 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         mCanvas = mSurfaceHolder.lockCanvas();
         mDraw();//绘图
         mSurfaceHolder.unlockCanvasAndPost(mCanvas);
+
+        //播放音乐
+        mSoundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+        jumpSoundId = mSoundPool.load(getContext(), R.raw.jump, 1);
+        jumphighSoundId = mSoundPool.load(getContext(), R.raw.jumphigh, 1);
+        mediaPlayer = MediaPlayer.create(getContext(), R.raw.background);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder,  int format, int width, int height) {
-
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         //销毁
         mIsRunning = false;
+        //停止播放Bgm
+        if (null != mediaPlayer) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 
     public void setmGameState(boolean mGameState) {
@@ -172,6 +183,7 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction();
         mGameState = true;//点击时开始游戏
+       // mGameActivity.GameOver();//测试
         switch (action){
             case ACTION_DOWN:
                 start = System.currentTimeMillis();
@@ -182,13 +194,13 @@ public class GameView extends SurfaceView implements Callback,Runnable{
                 if(mBox.getDown()){
                     return false;
                 }
-                if((int)(end - start) >= 400){
+                if((int)(end - start) >= 200){
                     mBox.setJumpSpeed(Box.HIGH_SPEED);
-                    mSoundPool.play(jumphighSoundId, 50, 50, 1, 1, 1);
+                    mSoundPool.play(jumphighSoundId, 1, 1, 1, 0, 1);
                 }
                 else{
                     mBox.setJumpSpeed(Box.LOW_SPEED);
-                    mSoundPool.play(jumpSoundId, 50, 50, 1, 1, 1);
+                    mSoundPool.play(jumpSoundId, 1, 1, 1, 0, 1);
 
                 }
                 mBox.Jump();
