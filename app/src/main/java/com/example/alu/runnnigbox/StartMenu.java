@@ -35,6 +35,15 @@ public class StartMenu extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+      /*  Button button = (Button) this.findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.exit(0);
+            }
+        });*/
+
     }
 
     /*

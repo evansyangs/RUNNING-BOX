@@ -18,6 +18,7 @@ import java.util.Random;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
+
 /**
  * Created by 10988 on 2017/10/7.
  */
@@ -52,6 +53,10 @@ public class GameView extends SurfaceView implements Callback,Runnable{
 
     public void setmGameActivity(GameActivity mGameActivity) {
         this.mGameActivity = mGameActivity;
+    }
+
+    public boolean returnstate(){
+        return mIsGameOver;
     }
 
     //初始化各个位置
@@ -150,6 +155,7 @@ public class GameView extends SurfaceView implements Callback,Runnable{
 
     public void run() {
 //决定线程是否继续执行
+
         while (mIsRunning) {
             long startTime = System.currentTimeMillis();
             while (mGameState) {

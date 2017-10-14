@@ -63,6 +63,7 @@ public class Box {
         }
         return null;
     }
+
     //这也是下部碰撞
     public boolean isCrash(StageBlock[] stageBlocks){
         for(StageBlock stageBlock: stageBlocks) {
