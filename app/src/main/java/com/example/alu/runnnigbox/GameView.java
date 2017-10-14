@@ -6,17 +6,21 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.os.Debug;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import java.util.Random;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
+import android.util.Log;
+
 
 /**
  * Created by 10988 on 2017/10/7.
@@ -60,6 +64,10 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         return screenHeight;
     }
 
+    public boolean returnstate(){
+        return mIsGameOver;
+    }
+
     //初始化各个位置
     Box mBox = new Box(this,100,screenHeight/2);   //游戏开始时主人公Box的位置
     //下面的台阶初始位置有点简单粗暴...到时我再按照设备屏幕调一下
@@ -99,7 +107,7 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         //方块状态变化和检测
         if(mBox.isCrash(screenHeight)){
             //此处调用游戏结束
-//            mGameActivity.GameOver();
+       //     Toast.makeText(mGameActivity,"GAME STATE" + mIsGameOver,Toast.LENGTH_SHORT);
             mGameState = false;//界面暂停
             mIsGameOver = true;//结束
         }
@@ -155,6 +163,7 @@ public class GameView extends SurfaceView implements Callback,Runnable{
 
     public void run() {
 //决定线程是否继续执行
+
         while (mIsRunning) {
             long startTime = System.currentTimeMillis();
             while (mGameState) {
@@ -206,6 +215,11 @@ public class GameView extends SurfaceView implements Callback,Runnable{
                 mBox.Jump();
                 break;
         }
+     //   Log.e("isGameover",""+mIsGameOver);
+        if (mIsGameOver)
+            mGameActivity.GameOver();
+
+
         return true;
         //return super.onTouchEvent(event);
     }
