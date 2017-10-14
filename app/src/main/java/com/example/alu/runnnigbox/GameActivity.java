@@ -7,10 +7,12 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,6 +29,7 @@ public class GameActivity extends Activity {
     private GameView mView = null;
     private RelativeLayout mGameOverLayout = null;
     private TextView mGameGrade = null;
+    private TextView mTips = null;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,9 +42,41 @@ public class GameActivity extends Activity {
         setContentView(R.layout.activity_game_view);
 
         mView = (GameView) findViewById(R.id.gameView);//获取gameView资源
-        mView.mGameActivity = this;
+        mView.setmGameActivity(this);
         mGameOverLayout = (RelativeLayout)  findViewById(R.id.game_over);
         mGameGrade = (TextView) findViewById(R.id.game_grade) ;
+        mTips = (TextView) findViewById(R.id.tips) ;
+
+
+        ImageView mImage_menu = (ImageView) findViewById(R.id.back_to_menu);
+        mImage_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GameActivity.this,StartMenu.class);
+                GameActivity.this.startActivity(intent);
+                GameActivity.this.finish();
+            }
+        });
+
+        ImageView mImage_restart = (ImageView) findViewById(R.id.restart);
+        mImage_restart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GameActivity.this, GameActivity.class);
+                GameActivity.this.startActivity(intent);
+                GameActivity.this.finish();
+            }
+        });
+
+        ImageView mImage_exit = (ImageView) findViewById(R.id.exit_game);
+        mImage_exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GameActivity.this,StartMenu.class);
+                GameActivity.this.startActivity(intent);
+                GameActivity.this.finish();
+            }
+        });
 
         Button button =  this.findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -49,12 +84,6 @@ public class GameActivity extends Activity {
                 CustomDialog();//构建自定义Dialog
             }
         });
-
-//        while (mView.ismIsGameOver()){
-//            mGameOverLayout.setVisibility(View.VISIBLE);
-//            String str = "哇！你总共跳过了"+mView.getmStageNumber()+"块台阶!";
-//            mGameGrade.setText(str);
-//        }
     }
 
     /*
@@ -117,6 +146,29 @@ public class GameActivity extends Activity {
         mGameOverLayout.setVisibility(View.VISIBLE);
         String str = "哇！你总共跳过了"+mView.getmStageNumber()+"块台阶!";
         mGameGrade.setText(str);
+    }
+
+    public void TipShow(String str){
+        mTips.setVisibility(View.VISIBLE);
+        mTips.setText(str);
+    }
+
+    public void TipHide(){
+        mTips.setVisibility(View.GONE);
+    }
+
+    //重写返回键
+   @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK) {
+            CustomDialog();
+            return true;
+        } else if(keyCode == KeyEvent.KEYCODE_MENU) {
+            // 监控菜单键
+
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 }

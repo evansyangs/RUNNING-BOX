@@ -28,7 +28,6 @@ public class Box {
 
     //初始化坐标
     public Box(int x, int y){
-
         this.x = x;
         this.y = y;
     }
