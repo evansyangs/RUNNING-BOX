@@ -23,15 +23,17 @@ import static android.view.MotionEvent.ACTION_UP;
  */
 
 public class GameView extends SurfaceView implements Callback,Runnable{
-    public Random mRandom = new Random();//随机数
+    private Random mRandom = new Random();//随机数
+    private int mStageNumber = 0;
     private Canvas mCanvas;
     private boolean mGameState = false; //游戏状态
     private Thread mThread;    //刷新界面线程
     private SurfaceHolder mSurfaceHolder;    //界面处理句柄
     private boolean mIsRunning = false;
+    private boolean mIsGameOver = false;
     private int TIME_IN_FRAME = 20;//刷新频率
 
-    public DisplayMetrics dm = getResources().getDisplayMetrics();    //获取屏幕信息
+    private DisplayMetrics dm = getResources().getDisplayMetrics();    //获取屏幕信息
     private int screenWidth = dm.widthPixels;    //横屏宽度
     private int screenHeight = dm.heightPixels;    //横屏高度
 
@@ -39,6 +41,14 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     private int jumphighSoundId;
     private SoundPool mSoundPool;
     private MediaPlayer mediaPlayer; //背景音乐播放
+
+    public int getmStageNumber() {
+        return mStageNumber;
+    }
+
+    public boolean ismIsGameOver() {
+        return mIsGameOver;
+    }
 
     public int getScreenWidth() {
         return screenWidth;
@@ -63,6 +73,7 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         if (mStageblock.getX() < -screenWidth/3){
             mStageblock.setX(screenWidth+mRandom.nextInt(5));
             mStageblock.setY(screenHeight-StageBlock.getHEIGHT()-mRandom.nextInt(300));
+            mStageNumber++;
         }
     }
 
@@ -78,12 +89,6 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         setFocusable(true);
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
-
-    }
-
-    //游戏结束
-    public void GameOver(){
-
     }
 
     //所有图像在此绘制
@@ -94,8 +99,7 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         if(mBox.isCrash(screenHeight)){
             //此处调用游戏结束
             mGameState = false;//界面暂停
-            GameOver();//结束
-
+            mIsGameOver = true;//结束
         }
         mBox.bump(mStageblock);
         mBox.freeFall(mStageblock);
