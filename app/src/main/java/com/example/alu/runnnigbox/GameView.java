@@ -19,6 +19,7 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
 
+
 /**
  * Created by 10988 on 2017/10/7.
  */
@@ -55,9 +56,6 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         this.mGameActivity = mGameActivity;
     }
 
-    public boolean returnstate(){
-        return mIsGameOver;
-    }
 
     //初始化各个位置
     Box mBox = new Box(this,100,screenHeight/2);   //游戏开始时主人公Box的位置
