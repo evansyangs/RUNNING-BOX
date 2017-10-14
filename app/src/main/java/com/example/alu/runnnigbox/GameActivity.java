@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.KeyEvent;
+
+import android.util.Log;
+
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -85,6 +87,7 @@ public class GameActivity extends Activity {
                 CustomDialog();//构建自定义Dialog
             }
         });
+
     }
 
     /*

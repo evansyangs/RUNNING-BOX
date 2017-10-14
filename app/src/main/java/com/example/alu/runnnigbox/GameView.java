@@ -6,17 +6,21 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.os.Debug;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import java.util.Random;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
+import android.util.Log;
+
 
 
 
@@ -57,6 +61,10 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     }
 
 
+    public boolean returnstate(){
+        return mIsGameOver;
+    }
+
     //初始化各个位置
     Box mBox = new Box(this,100,screenHeight/2);   //游戏开始时主人公Box的位置
     //下面的台阶初始位置有点简单粗暴...到时我再按照设备屏幕调一下
@@ -96,6 +104,7 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         //方块状态变化和检测
         if(mBox.isCrash(screenHeight)){
             //此处调用游戏结束
+
             mGameState = false;//界面暂停
             mIsGameOver = true;//结束
         }
@@ -205,6 +214,7 @@ public class GameView extends SurfaceView implements Callback,Runnable{
                 break;
         }
 
+
         int CASE = mStageNumber % 30;
         //显示提示与体积变化
         switch (CASE){
@@ -244,6 +254,7 @@ public class GameView extends SurfaceView implements Callback,Runnable{
             mGameActivity.GameOver();
             mIsRunning = false;//停止onDraw()
         }
+
 
         return true;
         //return super.onTouchEvent(event);
