@@ -17,6 +17,7 @@ public class StageBlock {
     private Paint mPaint;       //绘制
     private static int RADIAN = 20; //圆角矩阵的弧度
     public static int MOVESPEED = 10;
+
     GameView gameView;
 
     public static void setWIDTH(int WIDTH) {
@@ -33,6 +34,10 @@ public class StageBlock {
 
     public static int getHEIGHT() {
         return HEIGHT;
+    }
+
+    public static int getMOVESPEED() {
+        return MOVESPEED;
     }
 
     //初始化坐标

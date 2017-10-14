@@ -6,20 +6,17 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
-import android.os.Debug;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
-import android.widget.Toast;
 
 import java.util.Random;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
-import android.util.Log;
 
 
 
@@ -50,7 +47,8 @@ public class GameView extends SurfaceView implements Callback,Runnable{
     private SoundPool mSoundPool;
     private MediaPlayer mediaPlayer; //背景音乐播放
 
-    private String[] Tips={"长摁屏幕试试看","游戏结束了记得点击屏幕哦","快戳！用力戳！","我打赌，屏幕戳穿了你都到不了100个"};
+    private String[] Tips={"长摁屏幕试试看","游戏结束了记得点击屏幕哦",
+            "小心撞到方块左侧哦，那可能有意想不到的Bug!","我打赌，屏幕戳穿了你都到不了500个","别玩了，你妈喊你回家吃饭呢"};
 
     public int getmStageNumber() {
         return mStageNumber;
@@ -215,36 +213,42 @@ public class GameView extends SurfaceView implements Callback,Runnable{
         }
 
 
-        int CASE = mStageNumber % 30;
+        int CASE = mStageNumber % 60;
         //显示提示与体积变化
         switch (CASE){
-            case 6:
-            case 29:
+            case 2:
                 mGameActivity.TipShow(Tips[0]);
-                StageBlock.setWIDTH(StageBlock.getWIDTH()-4);
                 StageBlock.setHEIGHT(StageBlock.getHEIGHT()-2);
                 break;
-            case 18:
-            case 39:
-                mGameActivity.TipShow(Tips[1]);
+            case 8:
                 StageBlock.setWIDTH(StageBlock.getWIDTH()-4);
-                StageBlock.setHEIGHT(StageBlock.getHEIGHT()-2);
                 break;
-            case 10:
-                StageBlock.setWIDTH(StageBlock.getWIDTH()-4);
-                StageBlock.setHEIGHT(StageBlock.getHEIGHT()-2);
-                break;
-            case 28:
             case 14:
-                mGameActivity.TipShow(Tips[2]);
+                StageBlock.setWIDTH(StageBlock.getWIDTH()-4);
+                StageBlock.setHEIGHT(StageBlock.getHEIGHT()-2);
+                break;
+            case 20:
+                mGameActivity.TipShow(Tips[1]);
+                break;
+            case 26:
+                StageBlock.setWIDTH(StageBlock.getWIDTH()-2);
+                break;
+            case 32:
+                StageBlock.setHEIGHT(StageBlock.getHEIGHT()-1);
+                break;
+            case 38:
                 StageBlock.setWIDTH(StageBlock.getWIDTH()+4);
                 StageBlock.setHEIGHT(StageBlock.getHEIGHT()+2);
                 break;
-            case 34:
-            case 22:
-                mGameActivity.TipShow(Tips[3]);
+            case 44:
+                mGameActivity.TipShow(Tips[2]);
+                break;
+            case 50:
                 StageBlock.setWIDTH(StageBlock.getWIDTH()+4);
                 StageBlock.setHEIGHT(StageBlock.getHEIGHT()+2);
+                break;
+            case 56:
+                mGameActivity.TipShow(Tips[3]);
                 break;
             default:
                 mGameActivity.TipHide();
@@ -254,7 +258,6 @@ public class GameView extends SurfaceView implements Callback,Runnable{
             mGameActivity.GameOver();
             mIsRunning = false;//停止onDraw()
         }
-
 
         return true;
         //return super.onTouchEvent(event);
